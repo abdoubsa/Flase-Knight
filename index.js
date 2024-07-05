@@ -3,12 +3,25 @@ const mongoose = require("mongoose");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
+const connectToDB = require("./database/main");
 
 app.get("/", (req, res) => {
   res.json("hello world");
 });
 
-PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`server is runing on ${PORT}`);
+app.use((req, res) => {
+  res.status(404).json("Page not found");
 });
+
+const PORT = 5000;
+async function start() {
+  try {
+    await connectToDB(process.env.DATABASE_URL);
+    app.listen(PORT, () => {
+      console.log(`server is runing on ${PORT}`);
+    });
+  } catch {
+    console.log("error");
+  }
+}
+start();
