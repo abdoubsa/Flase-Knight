@@ -4,7 +4,16 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 const connectToDB = require("./database/main");
+const Character = require("./database/models/character_model.js");
+const characterRoute = require("./database/routes/character_route.js");
 
+//middleware
+app.use(express.json());
+
+//routes
+app.use("/api/characters", characterRoute);
+
+//
 app.get("/", (req, res) => {
   res.json("hello world");
 });
