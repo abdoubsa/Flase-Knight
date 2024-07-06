@@ -15,11 +15,25 @@ app.use("/api/characters", characterRoute);
 
 //
 app.get("/", (req, res) => {
-  res.json("hello world");
+  res.json("default page");
 });
 
-app.use((req, res) => {
-  res.status(404).json("Page not found");
+app.all("*", (req, res, next) => {
+  const err = new Error(`Can't find ${req.originalUrl} on the server!`);
+  err.status = "fail";
+  err.statusCode = 404;
+
+  next(err);
+});
+
+// global error handling middleware
+app.use((error, req, res, next) => {
+  error.statusCode = error.statusCode || 500;
+  error.status = error.status || "error";
+  res.status(error.statusCode).json({
+    status: error.statusCode,
+    message: error.message,
+  });
 });
 
 const PORT = 5000;
