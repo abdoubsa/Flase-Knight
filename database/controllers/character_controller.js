@@ -1,4 +1,5 @@
 const Character = require("../models/character_model.js");
+const { query, validationResult } = require("express-validator");
 
 const getCharacters = async (req, res) => {
   try {
@@ -69,26 +70,31 @@ const deleteCharacter = async (req, res) => {
 
 const paginateCharacters = async (req, res) => {
   try {
-    // Extract page and limit from query parameters with default values
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const result = validationResult(req);
 
-    // Calculate the starting index
-    const startIndex = (page - 1) * limit;
+    if (result.isEmpty()) {
+      // Get the total number of characters in the collection
+      const total = await Character.countDocuments();
 
-    // Query the database for paginated results
-    const characters = await Character.find().skip(startIndex).limit(limit);
+      // Extract page and limit from query parameters with default values
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
 
-    // Get the total number of characters in the collection
-    const total = await Character.countDocuments();
+      // Calculate the starting index
+      const startIndex = (page - 1) * limit;
 
-    // Send the paginated results in the response
-    res.json({
-      page,
-      limit,
-      total,
-      data: characters,
-    });
+      // Query the database for paginated results
+      const characters = await Character.find().skip(startIndex).limit(limit);
+
+      // Send the paginated results in the response
+      return res.json({
+        page,
+        limit,
+        total,
+        data: characters,
+      });
+    }
+    res.send({ errors: result.array() });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

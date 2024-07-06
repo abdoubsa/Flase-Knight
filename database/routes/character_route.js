@@ -2,6 +2,7 @@ const express = require("express");
 const Character = require("../models/character_model.js");
 const router = express.Router();
 const characterController = require("../controllers/character_controller.js");
+const { query } = require("express-validator");
 //
 
 // get all characters
@@ -15,6 +16,11 @@ router.put("/:id", characterController.updateCharacter);
 // delete a character
 router.delete("/:id", characterController.deleteCharacter);
 // show paginated characters
-router.get("/", characterController.paginateCharacters);
+router.get(
+  "/",
+  query("page").notEmpty(),
+  query("limit").notEmpty(),
+  characterController.paginateCharacters
+);
 
 module.exports = router;
