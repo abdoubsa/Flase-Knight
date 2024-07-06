@@ -5,6 +5,7 @@ const characterSchema = mongoose.Schema(
     characterName: {
       type: String,
       required: [true, "You must enter a name for your character"],
+      unique: [true, "the name must be unique"],
     },
 
     characterRace: {
