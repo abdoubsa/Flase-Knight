@@ -1,6 +1,6 @@
 # Challenge Document
 
-- Team Name: **TmogoLDB**
+- Team Name: **mongoLDB**
 - Challenge Name : **Challenge 1 (False Knight)**
 
 - What is the percentage of the challenge you have completed? **100%**
